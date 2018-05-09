@@ -9,21 +9,12 @@ using Mapster;
 
 namespace TestMakerFreeWebApp.Controllers
 {
-    [Route("api/[controller]")]
-    public class QuizController : Controller
+    public class QuizController : BaseApiController
     {
-        #region Private Fields
-
-        private ApplicationDbContext DbContext;
-
-        #endregion Private Fields
-
         #region Constructor
 
-        public QuizController(ApplicationDbContext context)
+        public QuizController(ApplicationDbContext context) : base(context)
         {
-            // Instantiate the ApplicationDbContext through DI
-            DbContext = context;
         }
 
         #endregion Constructor
@@ -50,13 +41,7 @@ namespace TestMakerFreeWebApp.Controllers
                     Error = String.Format("Quiz ID {0} has not been found", id)
                 });
             }
-
-            return new JsonResult(
-                quiz.Adapt<QuizViewModel>(),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+            return new JsonResult(quiz.Adapt<QuizViewModel>(), JsonSettings);
         }
 
         /// <summary>
@@ -89,11 +74,8 @@ namespace TestMakerFreeWebApp.Controllers
             DbContext.SaveChanges();
 
             // return the newly-created Quiz to the client.
-            return new JsonResult(quiz.Adapt<QuizViewModel>(),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+            return new JsonResult(quiz.Adapt<QuizViewModel>()
+                , JsonSettings);
         }
 
         /// <summary>
@@ -135,11 +117,8 @@ namespace TestMakerFreeWebApp.Controllers
             DbContext.SaveChanges();
 
             // return the updated Quiz to the client.
-            return new JsonResult(quiz.Adapt<QuizViewModel>(),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+            return new JsonResult(quiz.Adapt<QuizViewModel>()
+                , JsonSettings);
         }
 
         /// <summary>
@@ -194,12 +173,8 @@ namespace TestMakerFreeWebApp.Controllers
                 .OrderByDescending(q => q.CreatedDate)
                 .Take(num)
                 .ToArray();
-            return new JsonResult(
-                latest.Adapt<QuizViewModel[]>(),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+            return new JsonResult(latest.Adapt<QuizViewModel>()
+                , JsonSettings);
         }
 
         /// <summary>
@@ -215,12 +190,8 @@ namespace TestMakerFreeWebApp.Controllers
                 .OrderBy(q => q.Title)
                 .Take(num)
                 .ToArray();
-            return new JsonResult(
-                byTitle.Adapt<QuizViewModel[]>(),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+            return new JsonResult(byTitle.Adapt<QuizViewModel>()
+                , JsonSettings);
         }
 
         /// <summary>
@@ -238,10 +209,7 @@ namespace TestMakerFreeWebApp.Controllers
                 .ToArray();
             return new JsonResult(
                 random.Adapt<QuizViewModel[]>(),
-                new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+                JsonSettings);
         }
 
         #endregion Attribute-based routing methods
